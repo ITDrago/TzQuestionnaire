@@ -19,12 +19,16 @@ const OooForm = () => {
         /^([0-2]?[0-9]|3[0-1])\.(0?[1-9]|1[0-2])\.\d{4}$/,
         "Дата должна быть в формате ДД.ММ.ГГГГ"
       ),
+    FullName: Yup.string().required("Поле обязательно для заполнения"),
+    ShortName: Yup.string().required("Поле обязательно для заполнения"),
   });
   const formik = useFormik({
     initialValues: {
       Inn: "",
       Ogrn: "",
       Data: "",
+      FullName: "",
+      ShortName: "",
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
@@ -55,18 +59,48 @@ const OooForm = () => {
           <Form>
             <Row>
               <Col>
-                <Form.Group controlId="input1">
+                <Form.Group controlId="FullName">
                   <Form.Label>Наименование полное*</Form.Label>
                   <Form.Control
                     type="text"
                     placeholder="OOO 'Москвоская промышленная компания' "
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    value={formik.values.FullName}
+                    style={{ width: 400 }}
+                    className={
+                      formik.errors.FullName && formik.touched.FullName
+                        ? "is-invalid"
+                        : ""
+                    }
                   />
+                  {formik.errors.FullName && formik.touched.FullName && (
+                    <div className="invalid-feedback">
+                      {formik.errors.FullName}
+                    </div>
+                  )}
                 </Form.Group>
               </Col>
               <Col>
-                <Form.Group controlId="input2">
+                <Form.Group controlId="ShortName">
                   <Form.Label>Наименование сокращенное</Form.Label>
-                  <Form.Control type="text" placeholder="ООО 'МПК' " />
+                  <Form.Control
+                    type="text"
+                    placeholder="ООО 'МПК' "
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    value={formik.values.ShortName}
+                    className={
+                      formik.errors.ShortName && formik.touched.ShortName
+                        ? "is-invalid"
+                        : ""
+                    }
+                  />
+                  {formik.errors.ShortName && formik.touched.ShortName && (
+                    <div className="invalid-feedback">
+                      {formik.errors.ShortName}
+                    </div>
+                  )}
                 </Form.Group>
               </Col>
               <Col>

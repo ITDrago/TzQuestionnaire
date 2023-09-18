@@ -3,7 +3,7 @@ import Form from "react-bootstrap/Form";
 import IpForm from "./IpForm";
 import { useState } from "react";
 import OooForm from "./OooForm";
-
+import BankDetails from "./BankDetails";
 function App() {
   const [selector, setSelector] = useState(""); // Состояние для значения селектора
 
@@ -47,6 +47,7 @@ function App() {
       ) : selector === "option2" ? (
         <OooForm />
       ) : null}
+      <BankDetails/>
     </div>
   );
 }
