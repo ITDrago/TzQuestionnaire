@@ -116,6 +116,7 @@ function BankDetails() {
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 value={formik.values.BankName}
+                placeholder="ООО 'Московская промышленная компания'"
                 style={{ width: 500 }}
                 className={
                   formik.errors.BankName && formik.touched.BankName
@@ -150,6 +151,7 @@ function BankDetails() {
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 value={formik.values.CheckingAccount}
+                placeholder="XXXXXXXXXXXXXXXXXXXX"
                 className={
                   formik.errors.CheckingAccount &&
                   formik.touched.CheckingAccount
@@ -176,6 +178,7 @@ function BankDetails() {
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 value={formik.values.CorrespondentAccount}
+                placeholder="XXXXXXXXXXXXXXXXXXXX"
                 style={{ width: 500 }}
                 className={
                   formik.errors.CorrespondentAccount &&
