@@ -3,7 +3,7 @@ import { Container, Row, Col, Form, Button } from "react-bootstrap";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 
-const OooForm = () => {
+const LimitedLiabilityForm = () => {
   const validationSchema = Yup.object().shape({
     Inn: Yup.string()
       .required("Поле обязательно для заполнения")
@@ -244,4 +244,4 @@ const OooForm = () => {
   );
 };
 
-export default OooForm;
+export default LimitedLiabilityForm;
