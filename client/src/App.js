@@ -47,7 +47,7 @@ function App() {
       ) : selector === "option2" ? (
         <LimitedLiabilityForm />
       ) : null}
-      <BankDetails/>
+      {/* <BankDetails/> */}
     </div>
   );
 }

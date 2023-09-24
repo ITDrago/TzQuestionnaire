@@ -23,6 +23,14 @@ if (app.Environment.IsDevelopment())
 }
 
 builder.Services.AddCors();
+app.UseCors(builder =>
+{
+    builder
+    .AllowAnyOrigin()
+    .AllowAnyMethod()
+    .AllowAnyHeader();
+});
+
 app.UseHttpsRedirection();
 
 app.UseAuthorization();

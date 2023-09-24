@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using serverWebAPI.Data;
 
@@ -11,9 +12,11 @@ using serverWebAPI.Data;
 namespace serverWebAPI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230922182948_initial2")]
+    partial class initial2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -42,7 +45,10 @@ namespace serverWebAPI.Migrations
                     b.Property<string>("CorrespondentAccount")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("IpId")
+                    b.Property<int>("InnId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("IpId")
                         .HasColumnType("int");
 
                     b.Property<int?>("LimitedLiabilityId")
@@ -141,9 +147,7 @@ namespace serverWebAPI.Migrations
                 {
                     b.HasOne("serverWebAPI.Model.Ip", null)
                         .WithMany("BankData")
-                        .HasForeignKey("IpId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("IpId");
 
                     b.HasOne("serverWebAPI.Model.LimitedLiability", null)
                         .WithMany("BankData")
