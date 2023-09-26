@@ -12,8 +12,8 @@ using serverWebAPI.Data;
 namespace serverWebAPI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230924092255_initial4")]
-    partial class initial4
+    [Migration("20230926181653_12")]
+    partial class _12
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -45,7 +45,7 @@ namespace serverWebAPI.Migrations
                     b.Property<string>("CorrespondentAccount")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("IpId")
+                    b.Property<int?>("IpId")
                         .HasColumnType("int");
 
                     b.Property<int?>("LimitedLiabilityId")
@@ -105,7 +105,7 @@ namespace serverWebAPI.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<byte[]>("EgripScan")
+                    b.Property<byte[]>("EgrnipScan")
                         .HasColumnType("VARBINARY(MAX)");
 
                     b.Property<string>("FullName")
@@ -144,9 +144,7 @@ namespace serverWebAPI.Migrations
                 {
                     b.HasOne("serverWebAPI.Model.Ip", null)
                         .WithMany("BankData")
-                        .HasForeignKey("IpId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("IpId");
 
                     b.HasOne("serverWebAPI.Model.LimitedLiability", null)
                         .WithMany("BankData")

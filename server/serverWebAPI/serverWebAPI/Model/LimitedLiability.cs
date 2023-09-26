@@ -25,7 +25,7 @@ namespace serverWebAPI.Model
 
         public bool NoAgreement { get; set; }
 
-        public ICollection<BankData>? BankData { get; set; }
+        public List<BankData>? BankData { get; set; }
 
     }
 }

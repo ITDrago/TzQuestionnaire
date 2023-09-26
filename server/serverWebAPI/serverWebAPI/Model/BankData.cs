@@ -12,6 +12,6 @@
 
         public string? CorrespondentAccount { get; set;}
 
-        public int IpId { get; set; }
+        
     }
 }

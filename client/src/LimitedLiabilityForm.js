@@ -1,7 +1,8 @@
-import React from "react";
-import { Container, Row, Col, Form, Button } from "react-bootstrap";
+import React, { useState } from "react";
+import { Container, Row, Col, Form, Button, FormGroup } from "react-bootstrap";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import axios from "axios";
 
 const LimitedLiabilityForm = () => {
   const validationSchema = Yup.object().shape({
@@ -13,7 +14,7 @@ const LimitedLiabilityForm = () => {
       .required("Поле обязательно для заполнения")
       .max(13, "ОГРН может включать только 13 цифр")
       .matches(/^[0-9]+$/, "ОГРН должен содержать только цифры"),
-      DataRegistration: Yup.string()
+    RegistrationDate: Yup.string()
       .required("Поле обязательно для заполнения")
       .matches(
         /^([0-2]?[0-9]|3[0-1])\.(0?[1-9]|1[0-2])\.\d{4}$/,
@@ -25,26 +26,79 @@ const LimitedLiabilityForm = () => {
     InnScan: Yup.mixed().required("Поле обязательно для заполнения"),
     OgrnScan: Yup.mixed().required("Поле обязательно для заполнения"),
     EgrnipScan: Yup.mixed().required("Поле обязательно для заполнения"),
-    PremisesAgreementScan: Yup.mixed().required("Поле обязательно для заполнения")
+    PremisesAgreementScan: Yup.mixed().required(
+      "Поле обязательно для заполнения"
+    ),
   });
   const formik = useFormik({
     initialValues: {
       Inn: "",
       Ogrn: "",
-      DataRegistration: "",
+      RegistrationDate: "",
       FullName: "",
       ShortName: "",
-      InnScan : null,
-      OgrnScan : null,
+      InnScan: null,
+      OgrnScan: null,
       EgrnipScan: null,
       PremisesAgreementScan: null,
     },
     validationSchema: validationSchema,
-    onSubmit: (values) => {
-      // Обработчик отправки формы
-      console.log(values); // Выведет значения полей формы после валидации
-    },
   });
+
+  const BankData = {
+    Bik: "211231321213123",
+    BankName: "VTB",
+    CheckingAccount: "1231233122312",
+    CorrespondentAccount: "2323221321",
+  };
+  async function handleSubmit(e) {
+    e.preventDefault();
+
+    const formData = new FormData();
+    formData.append("FullName", formik.values.FullName)
+    formData.append("ShortName", formik.values.ShortName)
+    formData.append("Inn", formik.values.Inn);
+    formData.append("Ogrn", formik.values.Ogrn);
+    formData.append("RegistrationDate", formik.values.RegistrationDate);
+    formData.append("NoAgreement", noAgreement);
+    formData.append("InnScan", InnScan);
+    formData.append("OgrnScan", OgrnScan);
+    formData.append("EgrnipScan", EgrnipScan);
+    formData.append("PremisesAgreementScan", PremisesAgreementScan);
+    formData.append("BankData", JSON.stringify(BankData));
+    for (var value of formData.values()) {
+      console.log(value);
+    }
+    try {
+      const response = await axios.post(
+        "https://localhost:7174/api/LimitedLiability",
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
+
+      // Handle successful response
+      if (response.status === 200) {
+        console.log("Form submitted successfully");
+      } else {
+        console.error("Failed to submit form");
+      }
+    } catch (error) {
+      // Handle error
+      console.error("Error:", error);
+    }
+  }
+  const [noAgreement, setNoAgreement] = useState(false);
+
+  const handleNoAgreementChange = (event) => {
+    setNoAgreement(event.target.checked);
+  };
+  const [InnScan, setInnScan] = useState();
+  const [OgrnScan, setOgrnScan] = useState();
+  const [EgrnipScan, setEgrnipScan] = useState();
+  const [PremisesAgreementScan, setPremisesAgreementScan] = useState();
+
   return (
     <Container
       style={{
@@ -113,7 +167,7 @@ const LimitedLiabilityForm = () => {
                 </Form.Group>
               </Col>
               <Col>
-                <Form.Group controlId="DataRegistration">
+                <Form.Group controlId="RegistrationDate">
                   <Form.Label>Дата регитсрации*</Form.Label>
                   <Form.Control
                     type="text"
@@ -122,14 +176,18 @@ const LimitedLiabilityForm = () => {
                     onBlur={formik.handleBlur}
                     value={formik.values.Data}
                     className={
-                      formik.errors.DataRegistration && formik.touched.DataRegistration
+                      formik.errors.RegistrationDate &&
+                      formik.touched.RegistrationDate
                         ? "is-invalid"
                         : ""
                     }
                   />
-                  {formik.errors.DataRegistration && formik.touched.DataRegistration && (
-                    <div className="invalid-feedback">{formik.errors.DataRegistration}</div>
-                  )}
+                  {formik.errors.RegistrationDate &&
+                    formik.touched.RegistrationDate && (
+                      <div className="invalid-feedback">
+                        {formik.errors.RegistrationDate}
+                      </div>
+                    )}
                 </Form.Group>
               </Col>
             </Row>
@@ -162,12 +220,29 @@ const LimitedLiabilityForm = () => {
               </Col>
               <Col>
                 <Form.Group
-                  controlId="formFileLg"
+                  controlId="InnScan"
                   className="mb-3"
                   style={{ width: 400 }}
                 >
                   <Form.Label>Скан ИНН*</Form.Label>
-                  <Form.Control type="file" />
+                  <Form.Control
+                    type="file"
+                    onBlur={formik.handlBlur}
+                    onChange={(event) =>
+                      setInnScan(event.currentTarget.files[0])
+                    }
+                    // value={InnScan}
+                    className={
+                      formik.errors.InnScan && formik.touched.InnScan
+                        ? "is-invalid"
+                        : ""
+                    }
+                  />
+                  {formik.errors.InnScan && formik.touched.InnScan && (
+                    <div className="invalid-feedback">
+                      {formik.errors.InnScan}
+                    </div>
+                  )}
                 </Form.Group>
               </Col>
               <Col>
@@ -192,12 +267,29 @@ const LimitedLiabilityForm = () => {
               </Col>
               <Col>
                 <Form.Group
-                  controlId="formFileLg2"
+                  controlId="OgrnScan"
                   className="mb-3"
                   style={{ width: 400 }}
                 >
                   <Form.Label>Скан ОГРН*</Form.Label>
-                  <Form.Control type="file" />
+                  <Form.Control
+                    type="file"
+                    onBlur={formik.handlBlur}
+                    onChange={(event) =>
+                      setOgrnScan(event.currentTarget.files[0])
+                    }
+                    // value={InnScan}
+                    className={
+                      formik.errors.OgrnScan && formik.touched.OgrnScan
+                        ? "is-invalid"
+                        : ""
+                    }
+                  />
+                  {formik.errors.OgrnScan && formik.touched.OgrnScan && (
+                    <div className="invalid-feedback">
+                      {formik.errors.OgrnScan}
+                    </div>
+                  )}
                 </Form.Group>
               </Col>
             </Row>
@@ -210,45 +302,89 @@ const LimitedLiabilityForm = () => {
             <Row>
               <Col>
                 <Form.Group
-                  controlId="formFileLg3"
+                  controlId="EgrnipScan"
                   className="mb-3"
                   style={{ width: 400 }}
                 >
                   <Form.Label>
                     Скан выписки из ЕГРИП (не старше 3 месяцев)*
                   </Form.Label>
-                  <Form.Control type="file" />
+                  <Form.Control
+                    type="file"
+                    onBlur={formik.handlBlur}
+                    onChange={(event) =>
+                      setEgrnipScan(event.currentTarget.files[0])
+                    }
+                    // value={InnScan}
+                    className={
+                      formik.errors.EgrnipScan && formik.touched.EgrnipScan
+                        ? "is-invalid"
+                        : ""
+                    }
+                  />
+                  {formik.errors.EgrnipScan && formik.touched.EgrnipScan && (
+                    <div className="invalid-feedback">
+                      {formik.errors.EgrnipScan}
+                    </div>
+                  )}
                 </Form.Group>
               </Col>
               <Col>
                 <Form.Group
-                  controlId="formFileLg4"
+                  controlId="PremisesAgreementScan"
                   className="mb-3"
                   style={{ width: 400 }}
                 >
                   <Form.Label>
                     Скан договора аренды помешения (офиса)*
                   </Form.Label>
-                  <Form.Control type="file" />
+                  <Form.Control
+                    type="file"
+                    onBlur={formik.handlBlur}
+                    onChange={(event) =>
+                      setPremisesAgreementScan(event.currentTarget.files[0])
+                    }
+                    // value={InnScan}
+                    className={
+                      formik.errors.PremisesAgreementScan &&
+                      formik.touched.PremisesAgreementScan
+                        ? "is-invalid"
+                        : ""
+                    }
+                  />
+                  {formik.errors.PremisesAgreementScan &&
+                    formik.touched.PremisesAgreementScan && (
+                      <div className="invalid-feedback">
+                        {formik.errors.PremisesAgreementScan}
+                      </div>
+                    )}
                 </Form.Group>
               </Col>
               <Col>
-                <Form.Check
-                  inline
-                  label="Нет договора"
-                  name="group1"
-                  type="checkbox"
-                  style={{ marginTop: 35 }}
-                  // id={`inline-${type}-1`}
-                />
+                <FormGroup controlId="NoAgreement">
+                  <Form.Check
+                    inline
+                    label="Нет договора"
+                    name="NoAgreement"
+                    type="checkbox"
+                    style={{ marginTop: 35 }}
+                    checked={noAgreement}
+                    onChange={handleNoAgreementChange}
+                  />
+                </FormGroup>
               </Col>
             </Row>
+            <Button
+              variant="primary"
+              type="submit"
+              style={{ marginLeft: 1050 }}
+              onClick={(e) => handleSubmit(e)}
+            >
+              Далее
+            </Button>
           </Form>
         </Col>
       </Row>
-      <Button variant="primary" type="submit" style={{ marginLeft: 1050 }}>
-        Далее
-      </Button>
     </Container>
   );
 };

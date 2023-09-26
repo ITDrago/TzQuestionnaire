@@ -42,7 +42,7 @@ namespace serverWebAPI.Migrations
                     b.Property<string>("CorrespondentAccount")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("IpId")
+                    b.Property<int?>("IpId")
                         .HasColumnType("int");
 
                     b.Property<int?>("LimitedLiabilityId")
@@ -141,9 +141,7 @@ namespace serverWebAPI.Migrations
                 {
                     b.HasOne("serverWebAPI.Model.Ip", null)
                         .WithMany("BankData")
-                        .HasForeignKey("IpId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("IpId");
 
                     b.HasOne("serverWebAPI.Model.LimitedLiability", null)
                         .WithMany("BankData")

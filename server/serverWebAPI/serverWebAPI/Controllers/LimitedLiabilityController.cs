@@ -5,6 +5,8 @@ using System.Text.Json;
 
 namespace serverWebAPI.Controllers
 {
+    [Route("api/[controller]")]
+    [ApiController]
     public class LimitedLiabilityController : Controller
     {
       
@@ -17,7 +19,7 @@ namespace serverWebAPI.Controllers
 
         [HttpPost]
 
-        public async Task<ActionResult> PostIpForm([FromForm] LimitedLiabilityViewModel limitedLiabilityViewModel)
+        public async Task<ActionResult> PostLimitedLiabilityForm([FromForm] LimitedLiabilityViewModel limitedLiabilityViewModel)
         {
             if (limitedLiabilityViewModel == null)
                 return BadRequest();
@@ -60,6 +62,8 @@ namespace serverWebAPI.Controllers
             }
             var limitedLability = new LimitedLiability
             {
+                FullName = limitedLiabilityViewModel.FullName,
+                ShortName = limitedLiabilityViewModel.ShortName,
                 Inn = limitedLiabilityViewModel.Inn,
                 Ogrn = limitedLiabilityViewModel.Ogrn,
                 RegistrationDate = limitedLiabilityViewModel.RegistrationDate,
