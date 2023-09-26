@@ -13,7 +13,7 @@ const LimitedLiabilityForm = () => {
       .required("Поле обязательно для заполнения")
       .max(13, "ОГРН может включать только 13 цифр")
       .matches(/^[0-9]+$/, "ОГРН должен содержать только цифры"),
-    Data: Yup.string()
+      DataRegistration: Yup.string()
       .required("Поле обязательно для заполнения")
       .matches(
         /^([0-2]?[0-9]|3[0-1])\.(0?[1-9]|1[0-2])\.\d{4}$/,
@@ -21,14 +21,23 @@ const LimitedLiabilityForm = () => {
       ),
     FullName: Yup.string().required("Поле обязательно для заполнения"),
     ShortName: Yup.string().required("Поле обязательно для заполнения"),
+
+    InnScan: Yup.mixed().required("Поле обязательно для заполнения"),
+    OgrnScan: Yup.mixed().required("Поле обязательно для заполнения"),
+    EgrnipScan: Yup.mixed().required("Поле обязательно для заполнения"),
+    PremisesAgreementScan: Yup.mixed().required("Поле обязательно для заполнения")
   });
   const formik = useFormik({
     initialValues: {
       Inn: "",
       Ogrn: "",
-      Data: "",
+      DataRegistration: "",
       FullName: "",
       ShortName: "",
+      InnScan : null,
+      OgrnScan : null,
+      EgrnipScan: null,
+      PremisesAgreementScan: null,
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
@@ -104,7 +113,7 @@ const LimitedLiabilityForm = () => {
                 </Form.Group>
               </Col>
               <Col>
-                <Form.Group controlId="Data">
+                <Form.Group controlId="DataRegistration">
                   <Form.Label>Дата регитсрации*</Form.Label>
                   <Form.Control
                     type="text"
@@ -113,13 +122,13 @@ const LimitedLiabilityForm = () => {
                     onBlur={formik.handleBlur}
                     value={formik.values.Data}
                     className={
-                      formik.errors.Data && formik.touched.Data
+                      formik.errors.DataRegistration && formik.touched.DataRegistration
                         ? "is-invalid"
                         : ""
                     }
                   />
-                  {formik.errors.Data && formik.touched.Data && (
-                    <div className="invalid-feedback">{formik.errors.Data}</div>
+                  {formik.errors.DataRegistration && formik.touched.DataRegistration && (
+                    <div className="invalid-feedback">{formik.errors.DataRegistration}</div>
                   )}
                 </Form.Group>
               </Col>

@@ -19,7 +19,7 @@ namespace serverWebAPI.Model
         [Column(TypeName = "VARBINARY(MAX)")]
         public byte[]? OgrnScan { get; set; }
         [Column(TypeName = "VARBINARY(MAX)")]
-        public byte[]? EgripScan { get; set; }
+        public byte[]? EgrnipScan { get; set; }
         [Column(TypeName = "VARBINARY(MAX)")]
         public byte[]? PremisesAgreementScan { get; set; }
 
