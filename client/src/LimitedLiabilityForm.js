@@ -3,17 +3,22 @@ import { Container, Row, Col, Form, Button, FormGroup } from "react-bootstrap";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 const LimitedLiabilityForm = () => {
   const validationSchema = Yup.object().shape({
     Inn: Yup.string()
       .required("Поле обязательно для заполнения")
-      .max(10, "ИНН может включать только 10 цифр")
-      .matches(/^[0-9]+$/, "ИНН должен содержать только цифры"),
+      .matches(
+        /^\d{10}$/,
+        "ИНН должен содержать ровно 10 цифр и состоять только из цифр"
+      ),
     Ogrn: Yup.string()
       .required("Поле обязательно для заполнения")
-      .max(13, "ОГРН может включать только 13 цифр")
-      .matches(/^[0-9]+$/, "ОГРН должен содержать только цифры"),
+      .matches(
+        /^\d{13}$/,
+        "ОГРН должен содержать ровно 13 цифр и состоять только из цифр"
+      ),
     RegistrationDate: Yup.string()
       .required("Поле обязательно для заполнения")
       .matches(
@@ -55,16 +60,19 @@ const LimitedLiabilityForm = () => {
     e.preventDefault();
 
     const formData = new FormData();
-    formData.append("FullName", formik.values.FullName)
-    formData.append("ShortName", formik.values.ShortName)
+    formData.append("FullName", formik.values.FullName);
+    formData.append("ShortName", formik.values.ShortName);
     formData.append("Inn", formik.values.Inn);
     formData.append("Ogrn", formik.values.Ogrn);
     formData.append("RegistrationDate", formik.values.RegistrationDate);
     formData.append("NoAgreement", noAgreement);
-    formData.append("InnScan", InnScan);
-    formData.append("OgrnScan", OgrnScan);
-    formData.append("EgrnipScan", EgrnipScan);
-    formData.append("PremisesAgreementScan", PremisesAgreementScan);
+    formData.append("InnScan", formik.values.InnScan);
+    formData.append("OgrnScan", formik.values.OgrnScan);
+    formData.append("EgrnipScan", formik.values.EgrnipScan);
+    formData.append(
+      "PremisesAgreementScan",
+      formik.values.PremisesAgreementScan
+    );
     formData.append("BankData", JSON.stringify(BankData));
     for (var value of formData.values()) {
       console.log(value);
@@ -80,7 +88,7 @@ const LimitedLiabilityForm = () => {
 
       // Handle successful response
       if (response.status === 200) {
-        console.log("Form submitted successfully");
+        toast.success("Форма успешно отправлена");
       } else {
         console.error("Failed to submit form");
       }
@@ -94,10 +102,11 @@ const LimitedLiabilityForm = () => {
   const handleNoAgreementChange = (event) => {
     setNoAgreement(event.target.checked);
   };
-  const [InnScan, setInnScan] = useState();
-  const [OgrnScan, setOgrnScan] = useState();
-  const [EgrnipScan, setEgrnipScan] = useState();
-  const [PremisesAgreementScan, setPremisesAgreementScan] = useState();
+
+  const handleFileChange = (fieldName) => (event) => {
+    const file = event.currentTarget.files[0];
+    formik.setFieldValue(fieldName, file);
+  };
 
   return (
     <Container
@@ -227,11 +236,8 @@ const LimitedLiabilityForm = () => {
                   <Form.Label>Скан ИНН*</Form.Label>
                   <Form.Control
                     type="file"
-                    onBlur={formik.handlBlur}
-                    onChange={(event) =>
-                      setInnScan(event.currentTarget.files[0])
-                    }
-                    // value={InnScan}
+                    onBlur={formik.handleBlur}
+                    onChange={handleFileChange("InnScan")}
                     className={
                       formik.errors.InnScan && formik.touched.InnScan
                         ? "is-invalid"
@@ -274,11 +280,8 @@ const LimitedLiabilityForm = () => {
                   <Form.Label>Скан ОГРН*</Form.Label>
                   <Form.Control
                     type="file"
-                    onBlur={formik.handlBlur}
-                    onChange={(event) =>
-                      setOgrnScan(event.currentTarget.files[0])
-                    }
-                    // value={InnScan}
+                    onBlur={formik.handleBlur}
+                    onChange={handleFileChange("OgrnScan")}
                     className={
                       formik.errors.OgrnScan && formik.touched.OgrnScan
                         ? "is-invalid"
@@ -311,11 +314,8 @@ const LimitedLiabilityForm = () => {
                   </Form.Label>
                   <Form.Control
                     type="file"
-                    onBlur={formik.handlBlur}
-                    onChange={(event) =>
-                      setEgrnipScan(event.currentTarget.files[0])
-                    }
-                    // value={InnScan}
+                    onBlur={formik.handleBlur}
+                    onChange={handleFileChange("EgrnipScan")}
                     className={
                       formik.errors.EgrnipScan && formik.touched.EgrnipScan
                         ? "is-invalid"
@@ -340,11 +340,8 @@ const LimitedLiabilityForm = () => {
                   </Form.Label>
                   <Form.Control
                     type="file"
-                    onBlur={formik.handlBlur}
-                    onChange={(event) =>
-                      setPremisesAgreementScan(event.currentTarget.files[0])
-                    }
-                    // value={InnScan}
+                    onBlur={formik.handleBlur}
+                    onChange={handleFileChange("PremisesAgreementScan")}
                     className={
                       formik.errors.PremisesAgreementScan &&
                       formik.touched.PremisesAgreementScan

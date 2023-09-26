@@ -3,17 +3,22 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { Container, Row, Col, Form, Button, FormGroup } from "react-bootstrap";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 const IpForm = () => {
   const validationSchema = Yup.object().shape({
     Inn: Yup.string()
       .required("Поле обязательно для заполнения")
-      .max(10, "ИНН может включать только 10 цифр")
-      .matches(/^[0-9]+$/, "ИНН должен содержать только цифры"),
+      .matches(
+        /^\d{10}$/,
+        "ИНН должен содержать ровно 10 цифр и состоять только из цифр"
+      ),
     Ogrnip: Yup.string()
       .required("Поле обязательно для заполнения")
-      .max(15, "ОРГНИП может включать только 15 цифр")
-      .matches(/^[0-9]+$/, "ОГРНИП должен содержать только цифры"),
+      .matches(
+        /^\d{15}$/,
+        "ОГРНИП должен содержать ровно 15 цифр и состоять только из цифр"
+      ),
     RegistrationDate: Yup.string()
       .required("Поле обязательно для заполнения")
       .matches(
@@ -54,12 +59,12 @@ const IpForm = () => {
     formData.append("Ogrnip", formik.values.Ogrnip);
     formData.append("RegistrationDate", formik.values.RegistrationDate);
     formData.append("NoAgreement", noAgreement);
-    formData.append("InnScan", InnScan);
-    formData.append("OgrnipScan", OgrnipScan);
-    formData.append("EgrnipScan",EgrnipScan);
+    formData.append("InnScan", formik.values.InnScan);
+    formData.append("OgrnipScan", formik.values.OgrnipScan);
+    formData.append("EgrnipScan", formik.values.EgrnipScan);
     formData.append(
       "PremisesAgreementScan",
-      PremisesAgreementScan
+      formik.values.PremisesAgreementScan
     );
     formData.append("BankData", JSON.stringify(BankData));
     for (var value of formData.values()) {
@@ -76,7 +81,7 @@ const IpForm = () => {
 
       // Handle successful response
       if (response.status === 200) {
-        console.log("Form submitted successfully");
+        toast.success("Форма успешно отправлена");
       } else {
         console.error("Failed to submit form");
       }
@@ -90,11 +95,11 @@ const IpForm = () => {
   const handleNoAgreementChange = (event) => {
     setNoAgreement(event.target.checked);
   };
-  const [InnScan, setInnScan] = useState();
-  const [OgrnipScan, setOgrnipScan] = useState();
-  const [EgrnipScan, setEgrnipScan] = useState();
-  const [PremisesAgreementScan, setPremisesAgreementScan] = useState();
 
+  const handleFileChange = (fieldName) => (event) => {
+    const file = event.currentTarget.files[0];
+    formik.setFieldValue(fieldName, file);
+  };
   return (
     <Container
       style={{
@@ -145,11 +150,8 @@ const IpForm = () => {
                   <Form.Label>Скан ИНН*</Form.Label>
                   <Form.Control
                     type="file"
-                    onBlur={formik.handlBlur}
-                    onChange={(event) =>
-                      setInnScan(event.currentTarget.files[0])
-                    }
-                    // value={InnScan}
+                    onBlur={formik.handleBlur}
+                    onChange={handleFileChange("InnScan")}
                     className={
                       formik.errors.InnScan && formik.touched.InnScan
                         ? "is-invalid"
@@ -194,9 +196,7 @@ const IpForm = () => {
                   <Form.Label>Скан ОГРНИП*</Form.Label>
                   <Form.Control
                     type="file"
-                    onChange={(event) =>
-                      setOgrnipScan(event.currentTarget.files[0])
-                    }
+                    onChange={handleFileChange("OgrnipScan")}
                     onBlur={formik.handleBlur}
                     // value={OgrnipScan}
                     className={
@@ -255,11 +255,8 @@ const IpForm = () => {
                   </Form.Label>
                   <Form.Control
                     type="file"
-                    onChange={(event) =>
-                      setEgrnipScan(event.currentTarget.files[0])
-                    }
+                    onChange={handleFileChange("EgrnipScan")}
                     onBlur={formik.handleBlur}
-                    // value={EgrnipScan}
                     className={
                       formik.errors.EgrnipScan && formik.touched.EgrnipScan
                         ? "is-invalid"
@@ -284,11 +281,8 @@ const IpForm = () => {
                   </Form.Label>
                   <Form.Control
                     type="file"
-                    onChange={(event) =>
-                      setPremisesAgreementScan(event.currentTarget.files[0])
-                    }
+                    onChange={handleFileChange("PremisesAgreementScan")}
                     onBlur={formik.handleBlur}
-                    // value={PremisesAgreementScan}
                     className={
                       formik.errors.PremisesAgreementScan &&
                       formik.touched.PremisesAgreementScan
