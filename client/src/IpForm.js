@@ -4,6 +4,7 @@ import * as Yup from "yup";
 import { Container, Row, Col, Form, Button, FormGroup } from "react-bootstrap";
 import axios from "axios";
 import { toast } from "react-toastify";
+import BanksData from './BanksData.json';
 
 const IpForm = () => {
   const validationSchema = Yup.object().shape({
@@ -34,8 +35,8 @@ const IpForm = () => {
     Bik: Yup.string()
       .required("Поле обязательно для заполнения")
       .matches(
-        /^\d{10}$/,
-        "БИК должен содержать ровно 10 цифр и состоять только из цифр"
+        /^\d{9}$/,
+        "БИК должен содержать ровно 9 цифр и состоять только из цифр"
       ),
     BankName: Yup.string().required("Поле обязательно для заполнения"),
     CheckingAccount: Yup.string()
@@ -76,26 +77,17 @@ const IpForm = () => {
   const handleNoAgreementChange = (event) => {
     setNoAgreement(event.target.checked);
   };
-  const [values, setValues] = useState({
-    input1: "",
-    input2: "",
-    input3: "",
-    input4: "",
-  });
-
-  const handleChange = (event) => {
-    setValues({
-      ...values,
-      [event.target.name]: event.target.value,
-    });
-  };
-
-  const fillInput = (inputName, value) => {
-    setValues({
-      ...values,
-      [inputName]: value,
-    });
-  };
+ 
+  const handleBikChange = (field) => {
+    const bik = formik.values.Bik;
+    const bankData = BanksData.find((bank) => bank.BIK === bik);
+    if (bankData && field === "BankName"){
+      formik.setFieldValue(field, bankData.BankName);
+    }
+    else if (bankData && field === "CorrespondentAccount"){
+      formik.setFieldValue(field, bankData.CorrespondentAccount);
+    }
+  }
 
   const handleFileChange = (fieldName) => (event) => {
     const file = event.currentTarget.files[0];
@@ -370,7 +362,6 @@ const IpForm = () => {
                 </Row>
                 <Button
                   variant="primary"
-                  type="button"
                   style={{ marginLeft: 1000 }}
                   onClick={(e) => handleFormSubmission(e)}
                 >
@@ -450,7 +441,7 @@ const IpForm = () => {
                   <Button
                     variant="primary"
                     className="small-button"
-                    onClick={() => fillInput("input2", "Some value")}
+                    onClick={()=> handleBikChange("BankName")}
                     style={{ height: 38 }}
                   >
                     Заполнить
@@ -516,7 +507,7 @@ const IpForm = () => {
                   <Button
                     variant="primary"
                     className="small-button"
-                    onClick={() => fillInput("input4", "Some value")}
+                    onClick={()=> handleBikChange("CorrespondentAccount")}
                     style={{ height: 38 }}
                   >
                     Заполнить

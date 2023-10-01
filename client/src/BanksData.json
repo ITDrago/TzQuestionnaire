@@ -1,0 +1,27 @@
+[
+    {
+      "BIK": "044525225",
+      "BankName": "Альфа-Банк",
+      "CorrespondentAccount": "30101810200000000225"
+    },
+    {
+      "BIK": "042008643",
+      "BankName": "Сбербанк",
+      "CorrespondentAccount": "30101810400000000643"
+    },
+    {
+      "BIK": "044525593",
+      "BankName": "ВТБ",
+      "CorrespondentAccount": "30101810700000000593"
+    },
+    {
+      "BIK": "044525999",
+      "BankName": "Газпромбанк",
+      "CorrespondentAccount": "30101810900000000999"
+    },
+    {
+      "BIK": "044525888",
+      "BankName": "Райффайзенбанк",
+      "CorrespondentAccount": "30101810600000000888"
+    }
+  ]

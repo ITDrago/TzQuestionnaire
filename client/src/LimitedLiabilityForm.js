@@ -4,6 +4,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
 import { toast } from "react-toastify";
+import BanksData from './BanksData.json';
 
 const LimitedLiabilityForm = () => {
   const validationSchema = Yup.object().shape({
@@ -37,8 +38,8 @@ const LimitedLiabilityForm = () => {
     Bik: Yup.string()
       .required("Поле обязательно для заполнения")
       .matches(
-        /^\d{10}$/,
-        "БИК должен содержать ровно 10 цифр и состоять только из цифр"
+        /^\d{9}$/,
+        "БИК должен содержать ровно 9 цифр и состоять только из цифр"
       ),
     BankName: Yup.string().required("Поле обязательно для заполнения"),
     CheckingAccount: Yup.string()
@@ -76,26 +77,16 @@ const LimitedLiabilityForm = () => {
   const [currentStage, setCurrentStage] = useState(1);
   const [formData, setFormData] = useState(new FormData());
 
-  const [values, setValues] = useState({
-    input1: "",
-    input2: "",
-    input3: "",
-    input4: "",
-  });
-
-  const handleChange = (event) => {
-    setValues({
-      ...values,
-      [event.target.name]: event.target.value,
-    });
-  };
-
-  const fillInput = (inputName, value) => {
-    setValues({
-      ...values,
-      [inputName]: value,
-    });
-  };
+  const handleBikChange = (field) => {
+    const bik = formik.values.Bik;
+    const bankData = BanksData.find((bank) => bank.BIK === bik);
+    if (bankData && field === "BankName"){
+      formik.setFieldValue(field, bankData.BankName);
+    }
+    else if (bankData && field === "CorrespondentAccount"){
+      formik.setFieldValue(field, bankData.CorrespondentAccount);
+    }
+  }
   const [noAgreement, setNoAgreement] = useState(false);
 
   const handleNoAgreementChange = (event) => {
@@ -507,7 +498,7 @@ const LimitedLiabilityForm = () => {
                   <Button
                     variant="primary"
                     className="small-button"
-                    onClick={() => fillInput("input2", "Some value")}
+                    onClick={() => handleBikChange("BankName")}
                     style={{ height: 38 }}
                   >
                     Заполнить
@@ -573,7 +564,7 @@ const LimitedLiabilityForm = () => {
                   <Button
                     variant="primary"
                     className="small-button"
-                    onClick={() => fillInput("input4", "Some value")}
+                    onClick={() => handleBikChange("CorrespondentAccount")}
                     style={{ height: 38 }}
                   >
                     Заполнить
