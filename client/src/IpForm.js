@@ -76,7 +76,6 @@ const IpForm = () => {
   const handleNoAgreementChange = (event) => {
     setNoAgreement(event.target.checked);
   };
-  console.log(currentStage);
   const [values, setValues] = useState({
     input1: "",
     input2: "",
@@ -130,9 +129,6 @@ const IpForm = () => {
     };
     tmpFormData.append("BankData", JSON.stringify(BankData));
     setFormData(tmpFormData);
-    for (var value of formData.values()) {
-      console.log(value);
-    }
     try {
       const response = await axios.post(
         "https://localhost:7174/api/Ip",
