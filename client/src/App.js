@@ -2,7 +2,6 @@ import "./App.css";
 import Form from "react-bootstrap/Form";
 import IpForm from "./IpForm";
 import { useState } from "react";
-import BankDetails from "./BankDetails";
 import LimitedLiabilityForm from "./LimitedLiabilityForm";
 function App() {
   const [selector, setSelector] = useState(""); // Состояние для значения селектора
@@ -47,7 +46,6 @@ function App() {
       ) : selector === "option2" ? (
         <LimitedLiabilityForm />
       ) : null}
-      {/* <BankDetails/> */}
     </div>
   );
 }
